@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Execution Interface</title>
+    <!-- Bootstrap CSS -->
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+
+    <!-- jQuery -->
+    <script src="jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+    <div class="container mt-5 mb-5">
+        <!-- Nav -->
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">SQL Ejecutor</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">File</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" onclick="saveFormToLocalStorage()" href="#">Save State</a></li>
+                                <li><a class="dropdown-item" onclick="populateFormFromLocalStorage()" href="#">Load Last Saved State</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger disabled" href="#">Clear Storage</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Edit</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item disabled" href="#">Undo</a></li>
+                                <li><a class="dropdown-item disabled" href="#">Redo</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" onclick="$('#sql_query').val('');" href="#">Clear Query</a></li>
+                                <li><a class="dropdown-item text-danger" onclick="$('#result').text('');" href="#">Clear Result</a></li>
+                                <!-- <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="#">Clear Query</a></li> -->
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Tools</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item disabled" href="#">...</a></li>
+                                <li><a class="dropdown-item disabled" href="#">...</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item disabled" href="#">...</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <form class="d-flex">
+                        <button class="btn btn-outline-success" id="resultBtn" type="button" data-bs-toggle="modal" data-bs-target="#aboutModal">About</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Body -->
+        <div class="row"> 
+            <article class="col-md-12">
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <form id="sqlForm">
+                            <div class="row">
+                                <div class="col-6 col-md-3">
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <label for="serverName" class="form-label">Server Name</label>
+                                            <input type="text" class="form-control" id="serverName" name="serverName" required>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <label for="serverInstance" class="form-label">Server Instance</label>
+                                            <input type="text" class="form-control" id="serverInstance" name="serverInstance" required>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <label for="dbName" class="form-label">Database Name</label>
+                                            <input type="text" class="form-control" id="dbName" name="dbName" required>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <label for="dbUser" class="form-label">Database User</label>
+                                            <input type="text" class="form-control" id="dbUser" name="dbUser" required>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <label for="dbPass" class="form-label">Database Password</label>
+                                            <input type="password" class="form-control" id="dbPass" name="dbPass" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-9">
+                                    <div class="row pb-5 h-100">
+                                        <div class="col-12 mb-3 h-100">
+                                            <label for="sql_query" class="form-label">SQL Query</label>
+                                            <textarea class="form-control h-100" id="sql_query" name="sql_query" rows="5" required></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100 mt-3">Execute Query</button>
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <textarea class="form-control"id="result" rows="5"></textarea>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="aboutModalLabel">About the Proyect</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <pre></pre>
+                    </div>
+                    <!-- <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save Changes</button>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        $(document).ready(function () {
+            $('#sqlForm').on('submit', function (e) {
+                e.preventDefault();
+
+                // Clear previous results
+                $('#result').text('Executing query...');
+
+                // Send the AJAX request
+                $.ajax({
+                    url: 'connection.php', // Replace with the path to your PHP script
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        $('#result').text(response);
+                    },
+                    error: function (xhr, status, error) {
+                        $('#result').text('Error: ' + error);
+                    }
+                });
+
+                let $modalR = $('#aboutModal');
+                $('#resultBtn').on('click', function(e){
+                    $modalR.toggle('show');
+                });
+            });
+        });
+    </script>
+
+    <script>
+        // Function to save form data to local storage
+        function saveFormToLocalStorage() {
+            const form = document.getElementById('sqlForm');
+            const formData = new FormData(form);
+
+            // Save each form field to local storage
+            formData.forEach((value, key) => {
+                localStorage.setItem(key, value);
+            });
+
+            alert('Form data saved to local storage!');
+        }
+
+        // Function to populate form fields from local storage
+        function populateFormFromLocalStorage() {
+            const form = document.getElementById('sqlForm');
+            const formElements = form.elements;
+
+            for (let element of formElements) {
+                if (element.id && localStorage.getItem(element.id)) {
+                    element.value = localStorage.getItem(element.id);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
